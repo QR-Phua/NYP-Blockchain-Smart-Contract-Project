@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+
+        <script type="text/javascript" src="https://unpkg.com/web3@0.20.5/dist/web3.min.js"></script>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+        
+        
+        
+        <!-- The generated javascript and app.js will be substituted in below -->
+        <!-- JAVASCRIPT -->
+        <script src="app.js"></script>
+        <!-- The app.css contents will be subtitued in below -->
+        <!-- STYLE -->
+        <link rel="stylesheet" href="app.css">
+        
+        <script>
+            $(document).ready(function() {
+
+                $("#rDSubmit").click(function() {
+                    
+                    $("#RD").hide();
+                    
+                    drugRegistrationApp.registerDrug();
+                    
+                });
+
+                $("#sTSubmit").click(function () {
+
+                    var check = true;
+                    var total0 = true;
+                    var total1 = true;
+                    var total2 = true;
+                    var trialPart = 0;
+                    var goodReact = 0;
+                    var badReact = 0;
+                    if (Number.isInteger( parseInt( $("#sTtrialNo").val() ) ) && parseInt( $("#sTtrialNo").val()) > 0  ){
+                                                
+                    }
+                    else{
+                        check=false;
+                        alert("Invalid Clinical Trial Number!");
+                    }
+
+                    if (Number.isInteger( parseInt( $("#sTdrugNo").val() ) ) && parseInt( $("#sTdrugNo").val()) > 0 ){
+                                                
+                    }
+                    else{
+                        check=false;
+                        alert("Invalid Drug Number!");
+                    }
+
+                    if (Number.isInteger( parseInt( $("#sTtrialParticipants").val() ) ) && parseInt( $("#sTtrialParticipants").val()) > 0 ){
+                        trialPart += parseInt( $("#sTtrialParticipants").val() );                 
+                    }
+                    else{
+                        check=false;
+                        total0 = false;
+                        alert("Invalid Number of Trial Participants!");
+                    }
+
+                    if (Number.isInteger( parseInt( $("#sTdosesGiven").val() ) ) && parseInt( $("#sTdosesGiven").val()) > 0 ){
+                                                
+                    }
+                    else{
+                        check=false;
+                        alert("Invalid Number of Doses Given!");
+                    }
+
+                    if (Number.isInteger( parseInt( $("#sTgoodReaction").val() ) ) && parseInt( $("#sTgoodReaction").val()) >= 0 ){
+                        goodReact += parseInt( $("#sTgoodReaction").val() );     
+                    }
+                    else{
+                        check=false;
+                        total1=false;
+                        alert("Invalid Number of Trial Participants with Good Reaction!");
+                    }
+
+                    if (Number.isInteger( parseInt( $("#sTbadReaction").val() ) ) && parseInt( $("#sTbadReaction").val()) >= 0 ){
+                        badReact += parseInt( $("#sTbadReaction").val() );        
+                    }
+                    else{
+                        check=false;
+                        total2=false;
+                        alert("Invalid Number of Trial Participants with Bad Reaction!");
+                    }
+                    
+                    var correct = false;
+
+                    if (total1 && total2 && total0) {
+                        if (goodReact + badReact != trialPart){
+                            alert(goodReact);
+                            alert(badReact);
+                            alert(trialPart);
+                            alert("Number of Trial Participants with good and bad reactions do not equate to the the total number of trial participants!");
+                        }
+                        else{
+                            correct = true;
+                        }
+                    }
+
+                    if (correct && check){
+                        $("#ST").hide();
+                    
+                        drugRegistrationApp.registerTrialResults();
+                    }
+                    
+                    
+                })
+
+                $("#vRSubmit").click(function() {
+                    $("#VR").hide();
+                    $("#vRdrugNumber").text("");
+                    $("#vRdrugName").text("");
+                    $("#vRdrugDescription").text("");
+                    $("#vRdrugCompany").text("");
+                    $("#vRdrugApproval").text("");
+                    drugRegistrationApp.getDrug();
+                })
+
+                $("#vTRSubmit").click(function() {
+                    $("#VTR").hide();
+                    $("#vTRtrialNo").text("");
+                    $("#vTRdrugNo").text("");
+                    $("#vTRtrialParticipants").text("");
+                    $("#vTRdosesGiven").text("");
+                    $("#vTRgoodReaction").text("");
+                    $("#vTRbadReaction").text("");
+                    drugRegistrationApp.getDrugTrials();
+                })
+
+                $("#aDSubmit").click(function() {
+                    $("#AD").hide();
+                    
+                    drugRegistrationApp.approveDrug();
+                })
+
+            })
+        </script>
+    
+    </head>
+
+    <body>
+        <br>
+        <br>
+        <div class="container">
+            <div class="row justify-content-center">
+                <h2 id="title">Pharmaceutical R&D Drug Blockchain</h2>
+            </div>
+
+            <br>
+            <br>
+            
+            <div class="container">
+                <ul class="nav nav-pills nav-fill">
+                    <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#viewRecords">View Drug Records</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#viewTrialRecords">View Drug Clinical Trial Results</a>
+                        </li>
+                    <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#registerDrug">Register Drug </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#submitTrials">Submit Drug Clinical Trial Information</a>
+                        </li>
+                    <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#approveDrug">Approve Drug Certification</a>
+                    </li>
+                </ul>
+            
+
+                <div class="tab-content">
+
+                    <div class="tab-pane fade show active" id="viewRecords" >
+                        <br>
+                        <div class="container">
+                            <br>
+                            <form id="VR" class="was-validated">
+                                <div class="form-row">
+
+                                    <label for="vRDNumber">Drug Registration Number</label>
+                                    <input type="text" class="form-control" id="vRdrugNo" placeholder="Drug Registration Number" name="vRDNumber" required> 
+                                    <div class="valid-feedback">Looks Good!</div>
+                                    <div class="invalid-feedback">Please fill out this field.</div>
+                                    
+                                </div>
+                                <br>
+                                <button type="reset" id="vRSubmit" class="btn btn-primary">Get Drug Information</button>
+                            </form>
+                            <br>
+                            <br>
+                            
+                            <div class="row viewRecords" >
+                                <div class="col">
+                                    <p id="vRdrugNumber"></p>
+                                </div>
+                             
+                                <div class="col" >
+                                    <p id="vRdrugName"></p>
+                                </div>
+                                
+                                <div class="col" >
+                                    <p id="vRdrugCompany"></p>
+                                </div>
+
+                                <div class="col" >
+                                    <p id="vRdrugApproval"></p>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row viewRecords" >
+                                <div class="col">
+                                    <p id="vRdrugDescription"></p>
+                                </div>
+                            </div>
+                            <br>
+                            
+                            <br>
+                            
+                            <br>
+
+                        </div>
+                    </div>
+
+                    
+                    <div class="tab-pane fade" id="viewTrialRecords" >
+                        <br>
+                        <div class="container">
+                            <br>
+                            <form id="VTR" class="was-validated">
+                                <div class="form-row">
+                                    <div class="col">
+                                        <label for="vTDNumber">Drug Registration Number</label>
+                                        <input type="text" class="form-control" id=vtDrugNo  placeholder="Drug Registration Number" name="vTDNumber" required> 
+                                        <div class="valid-feedback">Looks Good!</div>
+                                        <div class="invalid-feedback">Please fill out this field.</div>
+                                    </div>
+
+                                    <div class="col">
+                                        <label for="vTNumber">Clinical Trial Number</label>
+                                        <input type="text" class="form-control" id="vtTrialNo" placeholder="Clinical Trial Number" name="vTNumber" required> 
+                                        <div class="valid-feedback">Looks Good!</div>
+                                        <div class="invalid-feedback">Please fill out this field.</div>
+                                    </div>
+
+                                </div>
+                                <br>
+                                
+                                <button type="reset" id="vTRSubmit" class="btn btn-primary">Get Drug Information</button>
+                            </form>
+
+                            <br>
+                            <br>
+
+                            
+                            <div class="row viewRecordsLabels" >
+                                <div class="col">
+                                    <p id="vTRtrialNo"></p>
+                                </div>
+
+                                <div class="col" >
+                                    <p id="vTRdrugNo"></p>
+                                </div>
+
+                                <div class="col">
+                                    <p id="vTRtrialParticipants"></p>
+                                </div>
+                            </div>
+                            <br>
+                            
+                            <div class="row viewRecordsLabels" >
+                                <div class="col">
+                                    <p id="vTRdosesGiven"></p>
+                                </div>
+
+                                <div class="col" >
+                                    <p id="vTRgoodReaction"></p>
+                                </div>
+
+                                <div class="col">
+                                    <p id="vTRbadReaction"></p>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="registerDrug">
+                        <br>
+                        <div class="container">
+                            <br>
+                            <form id="RD" class="was-validated">
+                                <div class="form-row ">
+                                    <div class="col">
+                                        <label for="drugName">Drug Name</label>
+                                        <input type="text" id="rDName" class="form-control" placeholder="Drug Name" name="drugName" required> 
+                                        <div class="valid-feedback">Looks Good!</div>
+                                        <div class="invalid-feedback">Please fill out this field.</div>
+                                    </div>
+
+                                    <div class="col">
+                                        <label for="drugManu">Drug Manufacturer</label>
+                                        <input type="text" id="rDCompany" class="form-control" placeholder="Drug Manufacturer" name="drugManu" required> 
+                                        <div class="valid-feedback">Looks Good!</div>
+                                        <div class="invalid-feedback">Please fill out this field.</div>
+                                    </div>
+
+                                </div>
+                                
+                                <br>
+
+                                <div class="form-row ">
+                                    <label for="drugDesc">Drug Description</label>
+                                    <textarea id="rDDescription" class="form-control" placeholder="Drug Description" rows="8" name="drugDesc" required></textarea> 
+                                    <div class="valid-feedback">Looks Good!</div>
+                                    <div class="invalid-feedback">Please fill out this field.</div>
+                                </div>
+                                <br>
+                                <button type="reset" id="rDSubmit" class="btn btn-primary ">Register Drug</button>
+                            </form>
+                            <br>
+                            <p id="rDLabel" ></p>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="submitTrials">
+                        <br>
+                        <div class="container">
+                            <br>
+                            <form id="ST" class="was-validated">
+                                <div class="form-row">
+                                    <div class="col">
+                                    <label for="trialNo">Clinical Trial Number</label>
+                                    <input type="text" id="sTtrialNo" class="form-control" placeholder="Clinical Trial Number" name="trialNo" required>
+                                    <div class="valid-feedback">Looks Good!</div>
+                                    <div class="invalid-feedback" id="ST1">Please fill out this field.</div> 
+                                    </div>
+
+                                    <div class="col">
+                                        <label for="drugNo">Drug Registration Number</label>
+                                        <input type="text" id="sTdrugNo" class="form-control" placeholder="Drug Registration Number" name="drugNo" required> 
+                                        <div class="valid-feedback">Looks Good!</div>
+                                        <div class="invalid-feedback">Please fill out this field.</div>
+                                    </div>
+
+                                    <div class="col">
+                                        <label for="trialPart">Number of Trial Participants</label>
+                                        <input type="text" id="sTtrialParticipants" class="form-control" placeholder="Number of Trial Partipants" name="trialPart" required> 
+                                        <div class="valid-feedback">Looks Good!</div>
+                                        <div class="invalid-feedback">Please fill out this field.</div>
+                                    
+                                    </div>
+
+                                </div>
+                                <br>
+                                
+                                <div class="form-row">
+                                    <label for="doses">Number of doses given to each participant</label>
+                                    <input type="text" id="sTdosesGiven" class="form-control" placeholder="Number of doses given to each participant" name="doses" required> 
+                                    <div class="valid-feedback">Looks Good!</div>
+                                    <div class="invalid-feedback">Please fill out this field.</div>
+                                </div>
+                                <br>
+                                <div class="form-row">
+                                    <label for="goodReact">Number of Trial Participants with good reaction</label>
+                                    <input type="text" id="sTgoodReaction" class="form-control" placeholder="Number of Trial Participants with good reaction" name="goodReact" required> 
+                                    <div class="valid-feedback">Looks Good!</div>
+                                    <div class="invalid-feedback">Please fill out this field.</div>
+                                </div>
+                                <br>
+                                <div class="form-row">
+                                    <label for="badReact">Number of Trial Participants with bad reaction</label>
+                                    <input type="text" id="sTbadReaction" class="form-control" placeholder="Number of Trial Partipants with bad reaction" number="badReact" required> 
+                                    <div class="valid-feedback">Looks Good!</div>
+                                    <div class="invalid-feedback">Please fill out this field.</div>
+                                </div>
+                                <br>
+                                <button type="reset" id="sTSubmit" class="btn btn-primary">Submit Trial Details</button>
+                            </form>
+                            <br>
+                            <p id="sTLabel"></p>
+                        </div>
+                    </div>
+
+
+                    <div class="tab-pane fade" id="approveDrug">
+                        <br>
+                        <div class="container">
+                            <br>
+                            <form id="AD" class="was-validated">
+                                <div class="form-row">
+                                    <label for="drugNumber">Drug Registration Number</label>
+                                    <input type="text" id="aDdrugNo" class="form-control" placeholder="Drug Registration Number" name="drugNumber" required> 
+                                    <div class="valid-feedback">Looks Good!</div>
+                                    <div class="invalid-feedback">Please fill out this field.</div>
+                                </div>
+                                <br>
+                                <div class="form-row">
+                                    <label for="specialKey">Special Key</label>
+                                    <input type="password" id="aDspecialKey" class="form-control" placeholder="Special Key" name="specialKey" required> 
+                                    <div class="valid-feedback">Looks Good!</div>
+                                    <div class="invalid-feedback">Please fill out this field.</div>
+                                </div>
+                                <br>
+                                <button type="reset" id="aDSubmit" class="btn btn-danger">Approve Drug</button>
+                            </form>
+                            <br>
+                            <p id="aDLabel"></p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </body>
+</html>
